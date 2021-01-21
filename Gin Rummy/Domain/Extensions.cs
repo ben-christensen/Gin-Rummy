@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Gin_Rummy.Domain.Services;
 
-namespace Gin_Rummy
+namespace Gin_Rummy.Domain
 {
     public static class Extensions
     {

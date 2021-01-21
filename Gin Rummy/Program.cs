@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections;
+using Gin_Rummy.Domain.Services;
+using Gin_Rummy.Services;
 
 namespace Gin_Rummy
 {
@@ -7,28 +8,36 @@ namespace Gin_Rummy
     {
         static void Main(string[] args)
         {
-            var deck = DeckCreator.CreateCards(); //Returns a shuffled set of cards
-            var p1hand = DealHand.CreateHandCards(deck);
-            var p2hand = DealHand.CreateHandCards(deck);
+            // I would use dependency injection, normally, to create the service
+            var deckService = new DeckService();
 
-            Console.WriteLine("Player 1 Hand:");
-            foreach (var element in p1hand)
+            var deck = deckService.CreateDeck();
+            var andrewHand = deckService.CreateHandCards(deck, new Player
             {
-                Console.WriteLine(element.DisplayName);
+                Name = "Andrew"
+            });
+            var benHand = deckService.CreateHandCards(deck, new Player
+            {
+                Name = "Ben"
+            });
+
+            Console.WriteLine($"{andrewHand.Player.Name}'s Hand:");
+            foreach (var card in andrewHand.PlayerHand)
+            {
+                Console.WriteLine(card);
             }
 
-            Console.WriteLine("Player 2 Hand:");
-            foreach (var element in p2hand)
+            Console.WriteLine($"{benHand.Player.Name}'s Hand:");
+            foreach (var card in benHand.PlayerHand)
             {
-                Console.WriteLine(element.DisplayName);
+                Console.WriteLine(card);
             }
 
             Console.WriteLine("Remaining Cards:");
-            foreach (var element in deck)
+            foreach (var element in deck.GameDeck)
             {
-                Console.WriteLine(element.DisplayName);
+                Console.WriteLine(element);
             }
-
         }
     }
 }

@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gin_Rummy.Domain;
+using Gin_Rummy.Domain.Services;
 
-namespace Gin_Rummy
+namespace Gin_Rummy.Services
 {
-    class Deck
+    public class DeckService
     {
-        public Queue<Card> GameDeck { get; set; }
-    }
-
-    public static class DeckCreator
-    {
-        public static Queue<Card> CreateCards()
+        /// <summary>
+        /// Creates a deck of 52 shuffled cards
+        /// </summary>
+        /// <returns></returns>
+        public Deck CreateDeck()
         {
             Queue<Card> cards = new Queue<Card>();
             for (int i = 2; i <= 14; i++)
@@ -23,19 +24,28 @@ namespace Gin_Rummy
                     {
                         Suit = suit,
                         Value = i,
-                        DisplayName = GetShortName(i, suit)
                     });
                 }
             }
-            return Shuffle(cards);
+
+            var deck = new Deck
+            {
+                GameDeck = Shuffle(cards)
+            };
+            return deck;
         }
 
-
-        private static Queue<Card> Shuffle(Queue<Card> cards)
+        /// <summary>
+        /// Shuffles all cards in the deck
+        /// </summary>
+        /// <param name="cards"></param>
+        /// <returns></returns>
+        public Queue<Card> Shuffle(Queue<Card> cards)
         {
             //Shuffle the existing cards using Fisher-Yates Modern
             List<Card> transformedCards = cards.ToList();
             Random r = new Random(DateTime.Now.Millisecond);
+
             for (int n = transformedCards.Count - 1; n > 0; --n)
             {
                 //Step 2: Randomly pick a card which has not been shuffled
@@ -57,33 +67,28 @@ namespace Gin_Rummy
             return shuffledCards;
         }
 
-
-        private static string GetShortName(int value, Constants.Suit suit)
+        /// <summary>
+        /// Creates a 10 card hand for the specified player
+        /// </summary>
+        /// <param name="deck"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public Hand CreateHandCards(Deck deck, Player player)
         {
-            string valueDisplay = "";
-            if (value >= 2 && value <= 10)
+            Queue<Card> handCards = new Queue<Card>();
+            for (int i = 0; i <= 9; i++)
             {
-                valueDisplay = value.ToString();
-            }
-            else if (value == 11)
-            {
-                valueDisplay = "J";
-            }
-            else if (value == 12)
-            {
-                valueDisplay = "Q";
-            }
-            else if (value == 13)
-            {
-                valueDisplay = "K";
-            }
-            else if (value == 14)
-            {
-                valueDisplay = "A";
+                Card dealtCard = deck.GameDeck.Dequeue();
+                handCards.Enqueue(dealtCard);
             }
 
-            return valueDisplay + Enum.GetName(typeof(Constants.Suit), suit)[0];
+            var hand = new Hand
+            {
+                Player = player,
+                PlayerHand = handCards
+            };
+
+            return hand;
         }
     }
 }
-

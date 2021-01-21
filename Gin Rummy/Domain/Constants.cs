@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Gin_Rummy
+﻿namespace Gin_Rummy.Domain
 {
     public class Constants
     {
